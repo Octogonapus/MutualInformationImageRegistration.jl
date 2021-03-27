@@ -3,7 +3,7 @@
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://Octogonapus.github.io/RegisterMI.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://Octogonapus.github.io/RegisterMI.jl/dev)
 [![Build Status](https://github.com/Octogonapus/RegisterMI.jl/workflows/CI/badge.svg)](https://github.com/Octogonapus/RegisterMI.jl/actions)
-[![Coverage](https://codecov.io/gh/Octogonapus/RegisterMI.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/Octogonapus/RegisterMI.jl)
+[![Coverage](https://codecov.io/gh/Octogonapus/RegisterMI.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/Octogonapus/RegisterMI.jl)
 
 RegisterMI performs image registration (i.e. the problem of aligning two similar images) using
 [mutual information](https://en.wikipedia.org/wiki/Mutual_information).
