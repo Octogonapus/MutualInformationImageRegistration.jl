@@ -41,7 +41,8 @@ function bench_register()
 
     expected_x = 5
     expected_y = -5
-    moving = [300, 200, 330, 220] .+ padding .+ [expected_x, expected_y, expected_x, expected_y]
+    moving =
+        [300, 200, 330, 220] .+ padding .+ [expected_x, expected_y, expected_x, expected_y]
 
     bm = @benchmark register!(
         $mi,

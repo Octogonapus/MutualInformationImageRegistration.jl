@@ -46,8 +46,10 @@ function register!(
     max_shift_x::Int,
     max_shift_y::Int,
     buffer::AbstractArray{T,2};
-    set_buffer! = (buffer, current_frame, moving_bbox) -> set_buffer!(buffer, current_frame, moving_bbox, max_shift_x, max_shift_y),
-    get_buffer_crop = (buffer, moving_bbox, shift_x, shift_y) -> get_buffer_crop(buffer, moving_bbox, shift_x, shift_y, max_shift_x, max_shift_y),
+    set_buffer! = (buffer, current_frame, moving_bbox) ->
+        set_buffer!(buffer, current_frame, moving_bbox, max_shift_x, max_shift_y),
+    get_buffer_crop = (buffer, moving_bbox, shift_x, shift_y) ->
+        get_buffer_crop(buffer, moving_bbox, shift_x, shift_y, max_shift_x, max_shift_y),
     prefilter_frame_crop! = x -> nothing,
     start_shift_x = 3,
     start_shift_y = 3,
@@ -59,7 +61,10 @@ function register!(
     best_mi = 0
     prev_mis::Union{Missing,AbstractArray{Float32,2}} = missing
 
-    while allowjumps[1] >= -max_shift_x && allowjumps[3] <= max_shift_x && allowjumps[2] >= -max_shift_y && allowjumps[4] <= max_shift_y
+    while allowjumps[1] >= -max_shift_x &&
+              allowjumps[3] <= max_shift_x &&
+              allowjumps[2] >= -max_shift_y &&
+              allowjumps[4] <= max_shift_y
         shift, best_mi, prev_mis = register!(
             mi,
             full_image,
@@ -152,11 +157,31 @@ function register!(
     range_y::AbstractVector{Int},
     buffer::AbstractArray{T,2},
     prev_mis::Union{Missing,AbstractArray{Float32,2}};
-    set_buffer! = (buffer, current_frame, moving_bbox) -> set_buffer!(buffer, current_frame, moving_bbox, maximum(range_x), maximum(range_y)),
-    get_buffer_crop = (buffer, moving_bbox, shift_x, shift_y) -> get_buffer_crop(buffer, moving_bbox, shift_x, shift_y, maximum(range_x), maximum(range_y)),
+    set_buffer! = (buffer, current_frame, moving_bbox) ->
+        set_buffer!(buffer, current_frame, moving_bbox, maximum(range_x), maximum(range_y)),
+    get_buffer_crop = (buffer, moving_bbox, shift_x, shift_y) -> get_buffer_crop(
+        buffer,
+        moving_bbox,
+        shift_x,
+        shift_y,
+        maximum(range_x),
+        maximum(range_y),
+    ),
     prefilter_frame_crop! = x -> nothing,
 ) where {T<:Integer}
-    mis = mutual_information!(mi, fixed, buffer, full_image, moving_bbox, range_x, range_y, prev_mis; set_buffer!, get_buffer_crop, prefilter_frame_crop!)
+    mis = mutual_information!(
+        mi,
+        fixed,
+        buffer,
+        full_image,
+        moving_bbox,
+        range_x,
+        range_y,
+        prev_mis;
+        set_buffer!,
+        get_buffer_crop,
+        prefilter_frame_crop!,
+    )
     best_mi, idx = findmax(mis)
     return idx.I, best_mi, mis
 end
@@ -172,7 +197,9 @@ function get_buffer_crop(buffer, moving_bbox, shift_x, shift_y, max_shift_x, max
     # Extract the bbox + (shift_x, shift_y). We are extracting it from an array of
     # bbox ± max_shift so we need to transform the coordinates into the right frame by
     # subtracting the origin of the bbox ± max_shift frame.
-    x_inds = ((moving_bbox[1]:moving_bbox[3]) .+ shift_x) .- (moving_bbox[1] - max_shift_x) .+ 1
-    y_inds = ((moving_bbox[2]:moving_bbox[4]) .+ shift_y) .- (moving_bbox[2] - max_shift_y) .+ 1
+    x_inds =
+        ((moving_bbox[1]:moving_bbox[3]) .+ shift_x) .- (moving_bbox[1] - max_shift_x) .+ 1
+    y_inds =
+        ((moving_bbox[2]:moving_bbox[4]) .+ shift_y) .- (moving_bbox[2] - max_shift_y) .+ 1
     view(buffer, x_inds, y_inds)
 end

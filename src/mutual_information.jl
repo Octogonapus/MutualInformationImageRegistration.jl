@@ -72,7 +72,11 @@ function mutual_information!(
 )
     w, h = size(fixed)
 
-    mis = OffsetArray(Array{Float32}(undef, length(range_x), length(range_y)), range_x, range_y)
+    mis = OffsetArray(
+        Array{Float32}(undef, length(range_x), length(range_y)),
+        range_x,
+        range_y,
+    )
     fixed_vec = vec(fixed)
 
     # Crop and prefilter a section of `current_frame` big enough to handle the shift extents.
@@ -117,11 +121,15 @@ function mutual_information!(
     range_y,
     prev_mis::AbstractArray{Float32,2};
     get_buffer_crop,
-    kwargs...
+    kwargs...,
 )
     w, h = size(fixed)
 
-    mis = OffsetArray(Array{Float32}(undef, length(range_x), length(range_y)), range_x, range_y)
+    mis = OffsetArray(
+        Array{Float32}(undef, length(range_x), length(range_y)),
+        range_x,
+        range_y,
+    )
 
     prev_range_x = axes(prev_mis, 1)
     prev_range_y = axes(prev_mis, 2)
