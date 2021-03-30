@@ -1,4 +1,4 @@
-module RegisterMI
+module MutualInformationImageRegistration
 
 using FastHistograms
 using OffsetArrays
@@ -10,10 +10,10 @@ export MutualInformationContainer
 export mutual_information!, register!
 
 """
-RegisterMI performs image registration using mutual information.
+MutualInformationImageRegistration performs image registration using mutual information.
 
 ```julia
-using RegisterMI, FastHistogram
+using MutualInformationImageRegistration, FastHistograms
 
 # Create the container used to hold intermediate variables for registration
 mi = MutualInformationContainer(SingleThreadFixedWidth2DHistogram())
@@ -51,6 +51,6 @@ shift, mm, mms = register!(
 @test shift == (-expected_x, -expected_y)
 ```
 """
-RegisterMI
+MutualInformationImageRegistration
 
 end

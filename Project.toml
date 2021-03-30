@@ -1,4 +1,4 @@
-name = "RegisterMI"
+name = "MutualInformationImageRegistration"
 uuid = "f55eb597-e6a1-4806-8966-600fcb3de930"
 authors = ["Octogonapus <firey45@gmail.com> and contributors"]
 version = "0.1.0"

@@ -55,9 +55,9 @@ jobs:
       - run: |
           julia --project=docs -e '
             using Documenter: DocMeta, doctest
-            using RegisterMI
-            DocMeta.setdocmeta!(RegisterMI, :DocTestSetup, :(using RegisterMI); recursive=true)
-            doctest(RegisterMI)'
+            using MutualInformationImageRegistration
+            DocMeta.setdocmeta!(MutualInformationImageRegistration, :DocTestSetup, :(using MutualInformationImageRegistration); recursive=true)
+            doctest(MutualInformationImageRegistration)'
       - run: julia --project=docs docs/make.jl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

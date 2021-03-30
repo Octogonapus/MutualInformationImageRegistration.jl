@@ -1,6 +1,6 @@
 using BenchmarkTools
-using RegisterMI
-using RegisterMI: FastHistograms.SingleThreadFixedWidth2DHistogram
+using MutualInformationImageRegistration
+using MutualInformationImageRegistration: FastHistograms.SingleThreadFixedWidth2DHistogram
 
 function bench_mi()
     fixed = rand(UInt8, 70, 100)

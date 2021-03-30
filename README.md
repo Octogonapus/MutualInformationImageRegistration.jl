@@ -1,11 +1,11 @@
-# RegisterMI
+# MutualInformationImageRegistration
 
-[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://Octogonapus.github.io/RegisterMI.jl/stable)
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://Octogonapus.github.io/RegisterMI.jl/dev)
-[![Build Status](https://github.com/Octogonapus/RegisterMI.jl/workflows/CI/badge.svg)](https://github.com/Octogonapus/RegisterMI.jl/actions)
-[![Coverage](https://codecov.io/gh/Octogonapus/RegisterMI.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/Octogonapus/RegisterMI.jl)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://Octogonapus.github.io/MutualInformationImageRegistration.jl/stable)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://Octogonapus.github.io/MutualInformationImageRegistration.jl/dev)
+[![Build Status](https://github.com/Octogonapus/MutualInformationImageRegistration.jl/workflows/CI/badge.svg)](https://github.com/Octogonapus/MutualInformationImageRegistration.jl/actions)
+[![Coverage](https://codecov.io/gh/Octogonapus/MutualInformationImageRegistration.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/Octogonapus/MutualInformationImageRegistration.jl)
 
-RegisterMI performs image registration (i.e. the problem of aligning two similar images) using
+MutualInformationImageRegistration performs image registration (i.e. the problem of aligning two similar images) using
 [mutual information](https://en.wikipedia.org/wiki/Mutual_information).
 This package is meant to be used to quickly register many relatively small images within a larger image.
 This package only supports computing a translation to register images; rotation and other warping is a non-goal.
@@ -13,7 +13,7 @@ This package only supports computing a translation to register images; rotation 
 ## Example
 
 ```julia
-using RegisterMI, FastHistogram, Random
+using MutualInformationImageRegistration, FastHistograms, Random
 
 # Create the container used to hold intermediate variables for registration
 mi = MutualInformationContainer(SingleThreadFixedWidth2DHistogram())
@@ -57,4 +57,4 @@ The mutual information implementation is based on [this work](https://matthew-br
 
 ## Benchmarks
 
-With two 50x40 8-bit images and an expected shift of (-5, 5), RegisterMI runs in 1.2 ms.
+With two 50x40 8-bit images and an expected shift of (-5, 5), MutualInformationImageRegistration runs in 1.2 ms.

@@ -1,14 +1,14 @@
 ```@meta
-CurrentModule = RegisterMI
+CurrentModule = MutualInformationImageRegistration
 ```
 
-# RegisterMI
+# MutualInformationImageRegistration
 
-Documentation for [RegisterMI](https://github.com/Octogonapus/RegisterMI.jl).
+Documentation for [MutualInformationImageRegistration](https://github.com/Octogonapus/MutualInformationImageRegistration.jl).
 
 ```@index
 ```
 
 ```@autodocs
-Modules = [RegisterMI]
+Modules = [MutualInformationImageRegistration]
 ```

@@ -1,5 +1,6 @@
-using RegisterMI, Random, ImageFiltering, ComputationalResources, Test
-using RegisterMI: FastHistograms.SingleThreadFixedWidth2DHistogram
+using MutualInformationImageRegistration
+using Random, ImageFiltering, ComputationalResources, Test
+using MutualInformationImageRegistration: FastHistograms.SingleThreadFixedWidth2DHistogram
 
 MAX_SHIFT = 11
 padding = [-10, -10, 10, 10]
