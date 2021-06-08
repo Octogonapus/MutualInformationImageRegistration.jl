@@ -17,8 +17,7 @@ padding = [-10, -10, 10, 10]
             ),
         )
         full_image = rand(UInt8, 500, 300)
-        # Create an asymmetric pattern of black pixels to register against
-        view(full_image, 300:320, 200:210) .= 0xff
+        view(full_image, 300:330, 200:220) .= 0xff
 
         fixed = full_image[(300-10):(330+10), (200-10):(220+10)]
 
@@ -70,8 +69,7 @@ padding = [-10, -10, 10, 10]
             ),
         )
         full_image = rand(UInt8, 500, 300)
-        # Create an asymmetric pattern of black pixels to register against
-        view(full_image, 300:320, 200:210) .= 0xff
+        view(full_image, 300:330, 200:220) .= 0xff
 
         fixed = full_image[(300-10):(330+10), (200-10):(220+10)]
 
