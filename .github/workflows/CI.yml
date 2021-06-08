@@ -36,6 +36,7 @@ jobs:
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
       - uses: actions/upload-artifact@v2
+        if: ${{ failure() }}
         with:
           name: failed-test-states
           path: "**/*.jld2"
