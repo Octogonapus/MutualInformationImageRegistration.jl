@@ -1,12 +1,19 @@
 using MutualInformationImageRegistration
 using Random, ImageFiltering, ComputationalResources, Test
-using MutualInformationImageRegistration: FastHistograms.SingleThreadFixedWidth2DHistogram
+using MutualInformationImageRegistration.FastHistograms
 
 MAX_SHIFT = 11
 padding = [-10, -10, 10, 10]
 
 @testset "register without filtering" begin
-    mi = MutualInformationContainer(SingleThreadFixedWidth2DHistogram())
+    mi = MutualInformationContainer(
+        create_fast_histogram(
+            FastHistograms.FixedWidth(),
+            FastHistograms.Arithmetic(),
+            FastHistograms.NoParallelization(),
+            [(0x00, 0xff, 4), (0x00, 0xff, 4)],
+        ),
+    )
     full_image = rand(UInt8, 500, 300)
     # Create an asymmetric pattern of black pixels to register against
     view(full_image, 300:320, 200:210) .= 0xff
@@ -48,7 +55,14 @@ end
         return nothing
     end
 
-    mi = MutualInformationContainer(SingleThreadFixedWidth2DHistogram())
+    mi = MutualInformationContainer(
+        create_fast_histogram(
+            FastHistograms.FixedWidth(),
+            FastHistograms.Arithmetic(),
+            FastHistograms.NoParallelization(),
+            [(0x00, 0xff, 4), (0x00, 0xff, 4)],
+        ),
+    )
     full_image = rand(UInt8, 500, 300)
     # Create an asymmetric pattern of black pixels to register against
     view(full_image, 300:320, 200:210) .= 0xff

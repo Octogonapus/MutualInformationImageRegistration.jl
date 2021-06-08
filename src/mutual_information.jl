@@ -1,4 +1,4 @@
-struct MutualInformationContainer{H<:FastHistogram}
+struct MutualInformationContainer{H}
     hist::H
     pxy::Array{Float32,2}
     px::Array{Float32,2}
@@ -6,7 +6,7 @@ struct MutualInformationContainer{H<:FastHistogram}
     px_py::Array{Float32,2}
     nzs::BitArray{2}
 
-    function MutualInformationContainer(hist::H) where {H<:FastHistogram}
+    function MutualInformationContainer(hist::H) where {H}
         pxy = counts(hist) ./ sum(counts(hist))
         px = sum(pxy, dims = 2)
         py = sum(pxy, dims = 1)
@@ -35,7 +35,7 @@ type to handle the formats of `x` and `y`.
 """
 function mutual_information!(mi::MutualInformationContainer, x, y)
     zero!(mi.hist)
-    calc_hist!(mi.hist, x, y)
+    increment_bins!(mi.hist, x, y)
     _mutual_information!(mi)
 end
 
