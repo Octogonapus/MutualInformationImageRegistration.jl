@@ -13,13 +13,21 @@ export mutual_information!, register!
 MutualInformationImageRegistration performs image registration using mutual information.
 
 ```julia
-using MutualInformationImageRegistration, FastHistograms
+using MutualInformationImageRegistration, FastHistograms, Random
 
 # Create the container used to hold intermediate variables for registration
-mi = MutualInformationContainer(SingleThreadFixedWidth2DHistogram())
+mi = MutualInformationContainer(
+    create_fast_histogram(
+        FastHistograms.FixedWidth(),
+        FastHistograms.Arithmetic(),
+        FastHistograms.NoParallelization(),
+        [(0x00, 0xff, 4), (0x00, 0xff, 4)],
+    ),
+)
 
 # Create the full image that the smaller images to register will be pulled from
 full_image = rand(UInt8, 500, 300)
+view(full_image, 300:330, 200:220) .= 0xff
 
 # The fixed image is the image that the other images are registered against
 fixed = full_image[(300-10):(330+10), (200-10):(220+10)]
