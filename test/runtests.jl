@@ -13,7 +13,7 @@ padding = [-10, -10, 10, 10]
                 FastHistograms.FixedWidth(),
                 FastHistograms.Arithmetic(),
                 FastHistograms.NoParallelization(),
-                [(0x00, 0xff, 4), (0x00, 0xff, 4)],
+                [(0x00, 0xff, 8), (0x00, 0xff, 8)],
             ),
         )
         full_image = rand(UInt8, 500, 300)
@@ -65,7 +65,7 @@ padding = [-10, -10, 10, 10]
                 FastHistograms.FixedWidth(),
                 FastHistograms.Arithmetic(),
                 FastHistograms.NoParallelization(),
-                [(0x00, 0xff, 4), (0x00, 0xff, 4)],
+                [(0x00, 0xff, 8), (0x00, 0xff, 8)],
             ),
         )
         full_image = rand(UInt8, 500, 300)
