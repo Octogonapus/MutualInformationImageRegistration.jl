@@ -96,7 +96,7 @@ padding = [-10, -10, 10, 10]
             # The shift we get out should be equal and opposite of the shift we applied
             @test shift == (-expected_x, -expected_y)
             if shift != (-expected_x, -expected_y)
-                jldsave("register without filtering fail.jld2"; mi, full_image, fixed, buffer, expected_x, expected_y, shift, mm, mms)
+                jldsave("register with filtering fail.jld2"; mi, full_image, fixed, buffer, expected_x, expected_y, shift, mm, mms)
                 break
             end
         end
