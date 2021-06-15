@@ -12,8 +12,8 @@ export mutual_information!, register!
 """
 MutualInformationImageRegistration performs image registration using mutual information.
 
-```julia
-using MutualInformationImageRegistration, FastHistograms, Random
+```jldoctest
+using MutualInformationImageRegistration, MutualInformationImageRegistration.FastHistograms, Random
 
 # Create the container used to hold intermediate variables for registration
 mi = MutualInformationContainer(
@@ -32,13 +32,13 @@ view(full_image, 300:330, 200:220) .= 0xff
 # The fixed image is the image that the other images are registered against
 fixed = full_image[(300-10):(330+10), (200-10):(220+10)]
 
-# A buffer is needed to hold intermediate data
-buffer = Array{UInt8}(undef, (size(fixed) .+ (MAX_SHIFT * 2))...)
-
 # The max shift is the maximum search range
 MAX_SHIFT = 11
 # Padding is used to grow the bbox for higher quality registration
 padding = [-10, -10, 10, 10]
+
+# A buffer is needed to hold intermediate data
+buffer = Array{UInt8}(undef, (size(fixed) .+ (MAX_SHIFT * 2))...)
 
 # Introduce a random shift to the moving bbox
 expected_x = rand(-5:5)
@@ -56,7 +56,11 @@ shift, mm, mms = register!(
 )
 
 # The shift we get out should be equal and opposite of the shift we applied
-@test shift == (-expected_x, -expected_y)
+shift == (-expected_x, -expected_y)
+
+# output
+
+true
 ```
 """
 MutualInformationImageRegistration
