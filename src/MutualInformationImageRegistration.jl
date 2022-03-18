@@ -54,7 +54,7 @@ shift, mm, mms = register!(
     [300, 200, 330, 220] .+ padding .+ [expected_x, expected_y, expected_x, expected_y],
     MAX_SHIFT,
     MAX_SHIFT,
-    buffer
+    buffer,
 )
 
 # The shift we get out should be equal and opposite of the shift we applied
