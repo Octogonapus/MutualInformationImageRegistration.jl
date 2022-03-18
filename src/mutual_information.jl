@@ -25,6 +25,7 @@ MutualInformationContainer(hist::H) where {H} =
 
 MutualInformationParallelization(::MutualInformationContainer{H,P}) where {H,P} = P()
 
+"Compute the MI. The hist inside `mi` must already be incremeted."
 _mutual_information!(mi::MutualInformationContainer) =
     (MutualInformationParallelization(mi), mi)
 
