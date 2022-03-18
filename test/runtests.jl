@@ -4,10 +4,14 @@ using MutualInformationImageRegistration.FastHistograms
 using JLD2, BenchmarkTools
 
 const MAX_SHIFT = 11
-const padding = [-10, -10, 10, 10]
+const PADDING = [-10, -10, 10, 10]
+const ALL_PARALLELIZATIONS = [
+    MutualInformationImageRegistration.NoParallelization(),
+    MutualInformationImageRegistration.SIMD(),
+]
 
 @testset "MutualInformationImageRegistration.jl" begin
-    @testset "register without filtering" begin
+    @testset "register without filtering ($p)" for p in ALL_PARALLELIZATIONS
         mi = MutualInformationContainer(
             create_fast_histogram(
                 FastHistograms.FixedWidth(),
@@ -15,6 +19,7 @@ const padding = [-10, -10, 10, 10]
                 FastHistograms.NoParallelization(),
                 [(0x00, 0xff, 8), (0x00, 0xff, 8)],
             ),
+            p,
         )
         full_image = rand(UInt8, 500, 300)
         view(full_image, 300:330, 200:220) .= 0xff
@@ -31,7 +36,7 @@ const padding = [-10, -10, 10, 10]
                 mi,
                 full_image,
                 fixed,
-                [300, 200, 330, 220] .+ padding .+
+                [300, 200, 330, 220] .+ PADDING .+
                 [expected_x, expected_y, expected_x, expected_y],
                 MAX_SHIFT,
                 MAX_SHIFT,
@@ -58,7 +63,7 @@ const padding = [-10, -10, 10, 10]
         end
     end
 
-    @testset "register with filtering" begin
+    @testset "register with filtering ($p)" for p in ALL_PARALLELIZATIONS
         function prefilter!(img::Array{UInt8,2})
             buf = Float32.(img)
             buf = imfilter(
@@ -78,6 +83,7 @@ const padding = [-10, -10, 10, 10]
                 FastHistograms.NoParallelization(),
                 [(0x00, 0xff, 8), (0x00, 0xff, 8)],
             ),
+            p,
         )
         full_image = rand(UInt8, 500, 300)
         view(full_image, 300:330, 200:220) .= 0xff
@@ -96,7 +102,7 @@ const padding = [-10, -10, 10, 10]
                 mi,
                 full_image,
                 fixed,
-                [300, 200, 330, 220] .+ padding .+
+                [300, 200, 330, 220] .+ PADDING .+
                 [expected_x, expected_y, expected_x, expected_y],
                 MAX_SHIFT,
                 MAX_SHIFT,
@@ -124,10 +130,7 @@ const padding = [-10, -10, 10, 10]
         end
     end
 
-    @testset "computing mutual_information doesn't allocate ($p)" for p in [
-        MutualInformationImageRegistration.NoParallelization(),
-        MutualInformationImageRegistration.SIMD(),
-    ]
+    @testset "computing mutual_information doesn't allocate ($p)" for p in ALL_PARALLELIZATIONS
         mi = MutualInformationContainer(
             create_fast_histogram(
                 FastHistograms.FixedWidth(),
