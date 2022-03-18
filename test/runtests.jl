@@ -1,10 +1,10 @@
 using MutualInformationImageRegistration
 using Random, ImageFiltering, ComputationalResources, Test
 using MutualInformationImageRegistration.FastHistograms
-using JLD2
+using JLD2, BenchmarkTools
 
-MAX_SHIFT = 11
-padding = [-10, -10, 10, 10]
+const MAX_SHIFT = 11
+const padding = [-10, -10, 10, 10]
 
 @testset "MutualInformationImageRegistration.jl" begin
     @testset "register without filtering" begin
@@ -100,5 +100,21 @@ padding = [-10, -10, 10, 10]
                 break
             end
         end
+    end
+
+    @testset "computing mutual_information doesn't allocate" begin
+        mi = MutualInformationContainer(
+            create_fast_histogram(
+                FastHistograms.FixedWidth(),
+                FastHistograms.Arithmetic(),
+                FastHistograms.NoParallelization(),
+                [(0x00, 0xff, 8), (0x00, 0xff, 8)],
+            ),
+        )
+
+        x = rand(UInt8, 500, 300)
+        y = rand(UInt8, 500, 300)
+
+        @test 0 == @ballocated mutual_information!($mi, $x, $y)
     end
 end

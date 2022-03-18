@@ -10,7 +10,7 @@ struct MutualInformationContainer{H}
         pxy = counts(hist) ./ sum(counts(hist))
         px = sum(pxy, dims = 2)
         py = sum(pxy, dims = 1)
-        px_py = px * py
+        px_py = px .* py
         nzs = pxy .> 0
 
         new{H}(hist, pxy, px, py, px_py, nzs)
@@ -21,10 +21,16 @@ function _mutual_information!(mi::MutualInformationContainer)
     mi.pxy .= counts(mi.hist) ./ sum(counts(mi.hist))
     sum!(mi.px, mi.pxy)
     sum!(mi.py, mi.pxy)
-    mi.px_py .= mi.px * mi.py
-    mi.nzs .= mi.pxy .> 0
-    pxys = mi.pxy[mi.nzs]
-    sum(pxys .* log.(pxys ./ mi.px_py[mi.nzs]))
+    mi.px_py .= mi.px .* mi.py
+    return _compute_mi_sum(mi.pxy, mi.px_py)
+end
+
+function _compute_mi_sum(pxy, px_py)
+    _sum = 0
+    @turbo for i in eachindex(pxy)
+        _sum += pxy[i] > 0 ? pxy[i] * log(pxy[i] / px_py[i]) : 0
+    end
+    return _sum
 end
 
 """
@@ -70,8 +76,6 @@ function mutual_information!(
     get_buffer_crop,
     prefilter_frame_crop! = x -> nothing,
 )
-    w, h = size(fixed)
-
     mis = OffsetArray(
         Array{Float32}(undef, length(range_x), length(range_y)),
         range_x,
@@ -123,8 +127,6 @@ function mutual_information!(
     get_buffer_crop,
     kwargs...,
 )
-    w, h = size(fixed)
-
     mis = OffsetArray(
         Array{Float32}(undef, length(range_x), length(range_y)),
         range_x,

@@ -2,6 +2,7 @@ module MutualInformationImageRegistration
 
 using FastHistograms
 using OffsetArrays
+using LoopVectorization
 
 include("mutual_information.jl")
 include("register.jl")
