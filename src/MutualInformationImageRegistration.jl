@@ -14,6 +14,8 @@ export mutual_information!, register!
 """
 MutualInformationImageRegistration performs image registration using mutual information.
 
+Here's a complete example on how to use this package:
+
 ```jldoctest
 using MutualInformationImageRegistration, MutualInformationImageRegistration.FastHistograms, Random
 
@@ -64,6 +66,10 @@ shift == (-expected_x, -expected_y)
 
 true
 ```
+
+Also look at the non-exported traits `NoParallelization` and `SIMD`, which can be used when constructing
+a `MutualInformationContainer`. `NoParallelization` is the default; other traits can be used to customize how the
+mutual information computation is run.
 """
 MutualInformationImageRegistration
 

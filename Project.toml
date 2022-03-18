@@ -1,7 +1,7 @@
 name = "MutualInformationImageRegistration"
 uuid = "f55eb597-e6a1-4806-8966-600fcb3de930"
 authors = ["Octogonapus <firey45@gmail.com> and contributors"]
-version = "0.1.4"
+version = "0.1.5"
 
 [deps]
 FastHistograms = "06971c4e-2824-4b19-bcf3-55442efb9bc7"
