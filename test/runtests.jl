@@ -5,10 +5,8 @@ using JLD2, BenchmarkTools
 
 const MAX_SHIFT = 11
 const PADDING = [-10, -10, 10, 10]
-const ALL_PARALLELIZATIONS = [
-    MutualInformationImageRegistration.NoParallelization(),
-    MutualInformationImageRegistration.SIMD(),
-]
+const ALL_PARALLELIZATIONS =
+    [MutualInformationImageRegistration.NoParallelization(), MutualInformationImageRegistration.SIMD()]
 
 @testset "MutualInformationImageRegistration.jl" begin
     @testset "register without filtering ($p)" for p in ALL_PARALLELIZATIONS
@@ -36,8 +34,7 @@ const ALL_PARALLELIZATIONS = [
                 mi,
                 full_image,
                 fixed,
-                [300, 200, 330, 220] .+ PADDING .+
-                [expected_x, expected_y, expected_x, expected_y],
+                [300, 200, 330, 220] .+ PADDING .+ [expected_x, expected_y, expected_x, expected_y],
                 MAX_SHIFT,
                 MAX_SHIFT,
                 buffer,
@@ -66,12 +63,8 @@ const ALL_PARALLELIZATIONS = [
     @testset "register with filtering ($p)" for p in ALL_PARALLELIZATIONS
         function prefilter!(img::Array{UInt8,2})
             buf = Float32.(img)
-            buf = imfilter(
-                CPU1(Algorithm.FIR()),
-                buf,
-                (centered(ones(2, 1) ./ 2), centered(ones(1, 2) ./ 2)),
-                "reflect",
-            )
+            buf =
+                imfilter(CPU1(Algorithm.FIR()), buf, (centered(ones(2, 1) ./ 2), centered(ones(1, 2) ./ 2)), "reflect")
             img .= round.(UInt8, buf)
             return nothing
         end
@@ -102,8 +95,7 @@ const ALL_PARALLELIZATIONS = [
                 mi,
                 full_image,
                 fixed,
-                [300, 200, 330, 220] .+ PADDING .+
-                [expected_x, expected_y, expected_x, expected_y],
+                [300, 200, 330, 220] .+ PADDING .+ [expected_x, expected_y, expected_x, expected_y],
                 MAX_SHIFT,
                 MAX_SHIFT,
                 buffer;

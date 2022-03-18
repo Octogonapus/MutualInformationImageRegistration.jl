@@ -6,10 +6,7 @@ struct MutualInformationContainer{H,P<:MutualInformationParallelization}
     px_py::Array{Float32,2}
     nzs::BitArray{2}
 
-    function MutualInformationContainer(
-        hist::H,
-        p::P,
-    ) where {H,P<:MutualInformationParallelization}
+    function MutualInformationContainer(hist::H, p::P) where {H,P<:MutualInformationParallelization}
         pxy = counts(hist) ./ sum(counts(hist))
         px = sum(pxy, dims = 2)
         py = sum(pxy, dims = 1)
@@ -20,18 +17,16 @@ struct MutualInformationContainer{H,P<:MutualInformationParallelization}
     end
 end
 
-MutualInformationContainer(hist::H) where {H} =
-    MutualInformationContainer(hist, NoParallelization())
+MutualInformationContainer(hist::H) where {H} = MutualInformationContainer(hist, NoParallelization())
 
 MutualInformationParallelization(::MutualInformationContainer{H,P}) where {H,P} = P()
 
-"Compute the MI. The hist inside `mi` must already be incremeted."
+"""
+Compute the MI. The hist inside `mi` must already be incremeted.
+"""
 _mutual_information!(mi::MutualInformationContainer) = _mutual_information!(MutualInformationParallelization(mi), mi)
 
-function _mutual_information!(
-    p::MutualInformationParallelization,
-    mi::MutualInformationContainer,
-)
+function _mutual_information!(p::MutualInformationParallelization, mi::MutualInformationContainer)
     mi.pxy .= counts(mi.hist) ./ sum(counts(mi.hist))
     sum!(mi.px, mi.pxy)
     sum!(mi.py, mi.pxy)
@@ -98,11 +93,7 @@ function mutual_information!(
     get_buffer_crop,
     prefilter_frame_crop! = x -> nothing,
 )
-    mis = OffsetArray(
-        Array{Float32}(undef, length(range_x), length(range_y)),
-        range_x,
-        range_y,
-    )
+    mis = OffsetArray(Array{Float32}(undef, length(range_x), length(range_y)), range_x, range_y)
     fixed_vec = vec(fixed)
 
     # Crop and prefilter a section of `current_frame` big enough to handle the shift extents.
@@ -149,11 +140,7 @@ function mutual_information!(
     get_buffer_crop,
     kwargs...,
 )
-    mis = OffsetArray(
-        Array{Float32}(undef, length(range_x), length(range_y)),
-        range_x,
-        range_y,
-    )
+    mis = OffsetArray(Array{Float32}(undef, length(range_x), length(range_y)), range_x, range_y)
 
     prev_range_x = axes(prev_mis, 1)
     prev_range_y = axes(prev_mis, 2)
