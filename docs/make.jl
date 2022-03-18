@@ -21,7 +21,4 @@ makedocs(;
     pages = ["Home" => "index.md"],
 )
 
-deploydocs(;
-    repo = "github.com/Octogonapus/MutualInformationImageRegistration.jl",
-    devbranch = "main",
-)
+deploydocs(; repo = "github.com/Octogonapus/MutualInformationImageRegistration.jl", devbranch = "main")

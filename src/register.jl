@@ -159,14 +159,8 @@ function register!(
     prev_mis::Union{Missing,AbstractArray{Float32,2}};
     set_buffer! = (buffer, current_frame, moving_bbox) ->
         set_buffer!(buffer, current_frame, moving_bbox, maximum(range_x), maximum(range_y)),
-    get_buffer_crop = (buffer, moving_bbox, shift_x, shift_y) -> get_buffer_crop(
-        buffer,
-        moving_bbox,
-        shift_x,
-        shift_y,
-        maximum(range_x),
-        maximum(range_y),
-    ),
+    get_buffer_crop = (buffer, moving_bbox, shift_x, shift_y) ->
+        get_buffer_crop(buffer, moving_bbox, shift_x, shift_y, maximum(range_x), maximum(range_y)),
     prefilter_frame_crop! = x -> nothing,
 ) where {T<:Integer}
     mis = mutual_information!(
@@ -197,9 +191,7 @@ function get_buffer_crop(buffer, moving_bbox, shift_x, shift_y, max_shift_x, max
     # Extract the bbox + (shift_x, shift_y). We are extracting it from an array of
     # bbox ± max_shift so we need to transform the coordinates into the right frame by
     # subtracting the origin of the bbox ± max_shift frame.
-    x_inds =
-        ((moving_bbox[1]:moving_bbox[3]) .+ shift_x) .- (moving_bbox[1] - max_shift_x) .+ 1
-    y_inds =
-        ((moving_bbox[2]:moving_bbox[4]) .+ shift_y) .- (moving_bbox[2] - max_shift_y) .+ 1
+    x_inds = ((moving_bbox[1]:moving_bbox[3]) .+ shift_x) .- (moving_bbox[1] - max_shift_x) .+ 1
+    y_inds = ((moving_bbox[2]:moving_bbox[4]) .+ shift_y) .- (moving_bbox[2] - max_shift_y) .+ 1
     view(buffer, x_inds, y_inds)
 end

@@ -1,4 +1,4 @@
-struct MutualInformationContainer{H}
+struct MutualInformationContainer{H,P<:MutualInformationParallelization}
     hist::H
     pxy::Array{Float32,2}
     px::Array{Float32,2}
@@ -6,25 +6,48 @@ struct MutualInformationContainer{H}
     px_py::Array{Float32,2}
     nzs::BitArray{2}
 
-    function MutualInformationContainer(hist::H) where {H}
+    function MutualInformationContainer(hist::H, p::P) where {H,P<:MutualInformationParallelization}
         pxy = counts(hist) ./ sum(counts(hist))
         px = sum(pxy, dims = 2)
         py = sum(pxy, dims = 1)
-        px_py = px * py
+        px_py = px .* py
         nzs = pxy .> 0
 
-        new{H}(hist, pxy, px, py, px_py, nzs)
+        new{H,P}(hist, pxy, px, py, px_py, nzs)
     end
 end
 
-function _mutual_information!(mi::MutualInformationContainer)
+MutualInformationContainer(hist::H) where {H} = MutualInformationContainer(hist, NoParallelization())
+
+MutualInformationParallelization(::MutualInformationContainer{H,P}) where {H,P} = P()
+
+"""
+Compute the MI. The hist inside `mi` must already be incremeted.
+"""
+_mutual_information!(mi::MutualInformationContainer) = _mutual_information!(MutualInformationParallelization(mi), mi)
+
+function _mutual_information!(p::MutualInformationParallelization, mi::MutualInformationContainer)
     mi.pxy .= counts(mi.hist) ./ sum(counts(mi.hist))
     sum!(mi.px, mi.pxy)
     sum!(mi.py, mi.pxy)
-    mi.px_py .= mi.px * mi.py
-    mi.nzs .= mi.pxy .> 0
-    pxys = mi.pxy[mi.nzs]
-    sum(pxys .* log.(pxys ./ mi.px_py[mi.nzs]))
+    mi.px_py .= mi.px .* mi.py
+    return _compute_mi_sum(p, mi.pxy, mi.px_py)
+end
+
+function _compute_mi_sum(::NoParallelization, pxy, px_py)
+    _sum = 0
+    for i in eachindex(pxy)
+        _sum += pxy[i] > 0 ? pxy[i] * log(pxy[i] / px_py[i]) : 0
+    end
+    return _sum
+end
+
+function _compute_mi_sum(::SIMD, pxy, px_py)
+    _sum = 0
+    @turbo for i in eachindex(pxy)
+        _sum += pxy[i] > 0 ? pxy[i] * log(pxy[i] / px_py[i]) : 0
+    end
+    return _sum
 end
 
 """
@@ -70,13 +93,7 @@ function mutual_information!(
     get_buffer_crop,
     prefilter_frame_crop! = x -> nothing,
 )
-    w, h = size(fixed)
-
-    mis = OffsetArray(
-        Array{Float32}(undef, length(range_x), length(range_y)),
-        range_x,
-        range_y,
-    )
+    mis = OffsetArray(Array{Float32}(undef, length(range_x), length(range_y)), range_x, range_y)
     fixed_vec = vec(fixed)
 
     # Crop and prefilter a section of `current_frame` big enough to handle the shift extents.
@@ -123,13 +140,7 @@ function mutual_information!(
     get_buffer_crop,
     kwargs...,
 )
-    w, h = size(fixed)
-
-    mis = OffsetArray(
-        Array{Float32}(undef, length(range_x), length(range_y)),
-        range_x,
-        range_y,
-    )
+    mis = OffsetArray(Array{Float32}(undef, length(range_x), length(range_y)), range_x, range_y)
 
     prev_range_x = axes(prev_mis, 1)
     prev_range_y = axes(prev_mis, 2)
