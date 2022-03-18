@@ -189,7 +189,6 @@ end
 function set_buffer!(buffer, current_frame, moving_bbox, max_shift_x, max_shift_y)
     x_inds = (moving_bbox[1]-max_shift_x):(moving_bbox[3]+max_shift_x)
     y_inds = (moving_bbox[2]-max_shift_y):(moving_bbox[4]+max_shift_y)
-    @info "set_buffer!" size(buffer) size(view(current_frame, x_inds, y_inds))
     buffer .= view(current_frame, x_inds, y_inds)
     nothing
 end

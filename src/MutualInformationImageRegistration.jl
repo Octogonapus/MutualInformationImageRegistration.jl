@@ -4,6 +4,7 @@ using FastHistograms
 using OffsetArrays
 using LoopVectorization
 
+include("traits.jl")
 include("mutual_information.jl")
 include("register.jl")
 

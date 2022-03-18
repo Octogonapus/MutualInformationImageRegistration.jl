@@ -41,7 +41,18 @@ const padding = [-10, -10, 10, 10]
             # The shift we get out should be equal and opposite of the shift we applied
             @test shift == (-expected_x, -expected_y)
             if shift != (-expected_x, -expected_y)
-                jldsave("register without filtering fail.jld2"; mi, full_image, fixed, buffer, expected_x, expected_y, shift, mm, mms)
+                jldsave(
+                    "register without filtering fail.jld2";
+                    mi,
+                    full_image,
+                    fixed,
+                    buffer,
+                    expected_x,
+                    expected_y,
+                    shift,
+                    mm,
+                    mms,
+                )
                 break
             end
         end
@@ -96,13 +107,44 @@ const padding = [-10, -10, 10, 10]
             # The shift we get out should be equal and opposite of the shift we applied
             @test shift == (-expected_x, -expected_y)
             if shift != (-expected_x, -expected_y)
-                jldsave("register with filtering fail.jld2"; mi, full_image, fixed, buffer, expected_x, expected_y, shift, mm, mms)
+                jldsave(
+                    "register with filtering fail.jld2";
+                    mi,
+                    full_image,
+                    fixed,
+                    buffer,
+                    expected_x,
+                    expected_y,
+                    shift,
+                    mm,
+                    mms,
+                )
                 break
             end
         end
     end
 
-    @testset "computing mutual_information doesn't allocate" begin
+    @testset "computing mutual_information doesn't allocate ($p)" for p in [
+        MutualInformationImageRegistration.NoParallelization(),
+        MutualInformationImageRegistration.SIMD(),
+    ]
+        mi = MutualInformationContainer(
+            create_fast_histogram(
+                FastHistograms.FixedWidth(),
+                FastHistograms.Arithmetic(),
+                FastHistograms.NoParallelization(),
+                [(0x00, 0xff, 8), (0x00, 0xff, 8)],
+            ),
+            p,
+        )
+
+        x = rand(UInt8, 500, 300)
+        y = rand(UInt8, 500, 300)
+
+        @test 0 == @ballocated mutual_information!($mi, $x, $y)
+    end
+
+    @testset "default parallelization is NoParallelization" begin
         mi = MutualInformationContainer(
             create_fast_histogram(
                 FastHistograms.FixedWidth(),
@@ -111,10 +153,7 @@ const padding = [-10, -10, 10, 10]
                 [(0x00, 0xff, 8), (0x00, 0xff, 8)],
             ),
         )
-
-        x = rand(UInt8, 500, 300)
-        y = rand(UInt8, 500, 300)
-
-        @test 0 == @ballocated mutual_information!($mi, $x, $y)
+        @test MutualInformationImageRegistration.MutualInformationParallelization(mi) ==
+              MutualInformationImageRegistration.NoParallelization()
     end
 end
