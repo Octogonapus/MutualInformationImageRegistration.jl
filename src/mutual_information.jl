@@ -6,7 +6,7 @@ struct MutualInformationContainer{H,P<:MutualInformationParallelization}
     px_py::Array{Float32,2}
     nzs::BitArray{2}
 
-    function MutualInformationContainer(hist::H, p::P) where {H,P<:MutualInformationParallelization}
+    function MutualInformationContainer(hist::H, ::P) where {H,P<:MutualInformationParallelization}
         pxy = counts(hist) ./ sum(counts(hist))
         px = sum(pxy, dims = 2)
         py = sum(pxy, dims = 1)
