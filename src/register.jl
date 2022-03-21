@@ -55,8 +55,12 @@ these from their defaults.
 
 The parameter `prefilter_frame_crop!` can be specified if you want to apply image filtering before computing the
 mutual information between the two images. This function must mutate the image it is given with whatever filtering
-operation you implement. Also, the `fixed` image must have the filtering pre-applied. See this package's tests for an
-example.
+operation you implement.
+This function will pass one image size to the prefilter function: the size of `moving_bbox` plus/minus the max shifts.
+Also, the `fixed` image must have the filtering pre-applied. Consider implementing this by calling your prefilter
+function on the `fixed` image before you pass it to this function. Note that if you choose to do this, your prefilter
+function will then have to handle TWO image sizes (the one from above AND the size of the `fixed` image).
+See this package's tests for an example.
 
 The returned value may be `nothing` if the `moving_bbox` moved outside the bounds of the `full_image`.
 Otherwise, the returned value is `shift, best_mi, prev_mis`. `shift` is the computed translation that should be
